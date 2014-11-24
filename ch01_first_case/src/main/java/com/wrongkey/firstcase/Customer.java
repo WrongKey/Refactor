@@ -47,50 +47,55 @@ public class Customer {
      * @date 2014/11/17
      */
     public String statement() {
-        double totalAmount = 0; //总价格
-        int frequentRenterPoints = 0;//积分
         String result = getName() + "的租借详单：\n";
 
         Iterator<Rental> rentals_iter = rentals.iterator();
 
         while (rentals_iter.hasNext()) {
-            double thisAmount = 0;  //此条租借记录的费用
             Rental rental = rentals_iter.next();
-
-            switch (rental.getMovie().getPriceCode()) {
-                case Movie.REGULAR:
-                    //普通片价格策略，两天以内（含两天）共2元，之后每天1.5元
-                    thisAmount += 2;
-                    if (rental.getDaysRented() > 2)
-                        thisAmount += (rental.getDaysRented() - 2) * 1.5;
-                    break;
-                case Movie.NEW_RELEASE:
-                    //新片价格策略，每天3元
-                    thisAmount += rental.getDaysRented() * 3;
-                    break;
-                case Movie.CHILDRENS:
-                    //儿童片价格策略，三天以内（含两天）共1.5元,之后每天1.5元
-                    thisAmount += 1.5;
-                    if (rental.getDaysRented() > 3)
-                        thisAmount += (rental.getDaysRented() - 3) * 1.5;
-                    break;
-            }
-
-            frequentRenterPoints++;//积分增加
-            //影片为新片且租期大于1积分再加1
-            if ((rental.getMovie().getPriceCode() == Movie.NEW_RELEASE) &&
-                    rental.getDaysRented() > 1)
-                frequentRenterPoints++;
-
             result += "\t影片: 《" + rental.getMovie().getTitle() + "》\t租期: "
-                    + rental.getDaysRented() + "天\t花费： $"+thisAmount
-                    +"\t获得积分: "+(((rental.getMovie().getPriceCode() == Movie.NEW_RELEASE) &&
-                    rental.getDaysRented() > 1)?2:1)+"\n";
-
-            totalAmount += thisAmount;
+                    + rental.getDaysRented() + "天\t花费： $" + rental.getCharge()
+                    + "\t获得积分: " + rental.getFrequentRenterPoints() + "\n";
         }
 
-        result += "\n总共花费: $" + totalAmount +"\n总共获取积分： "+frequentRenterPoints;
+        result += "\n总共花费: $" + getTotalCharge() + "\n总共获取积分： " + getTotalFrequentrenterPoints();
         return result;
     }
+
+    /**
+     * @param []
+     * @return int
+     * @author wrongkey
+     * @description get Total FrequentrenterPoints
+     * @date 2014/11/24
+     */
+    private int getTotalFrequentrenterPoints() {
+        int result = 0;
+
+        Iterator<Rental> rentals_iter = rentals.iterator();
+        while (rentals_iter.hasNext()) {
+            Rental rental = rentals_iter.next();
+            result += rental.getFrequentRenterPoints();
+        }
+        return result;
+    }
+
+    /**
+     * @param []
+     * @return double
+     * @author wrongkey
+     * @description get Total Charge
+     * @date 2014/11/24
+     */
+    private double getTotalCharge() {
+        double result = 0; //总价格
+        Iterator<Rental> rentals_iter = rentals.iterator();
+
+        while (rentals_iter.hasNext()) {
+            Rental rental = rentals_iter.next();
+            result += rental.getCharge();
+        }
+        return result;
+    }
+
 }

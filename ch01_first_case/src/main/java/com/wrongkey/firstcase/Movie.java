@@ -14,37 +14,31 @@ public class Movie {
 
     private String title;//片名
     private int priceCode;//价格码
+    private Price price;
 
     public Movie(String title, int priceCode) {
         this.title = title;
-        this.priceCode = priceCode;
+        setPriceCode(priceCode);
     }
 
     /**
-     *getTitle
-     *@return java.lang.String
-     *@date 2014/11/17
+     * getTitle
+     *
+     * @return java.lang.String
+     * @date 2014/11/17
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * setTitle
+     * getPriceCode
      *
-     * @param [title]
+     * @return int
      * @date 2014/11/17
      */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    /**
-     *getPriceCode
-     *@return int
-     *@date 2014/11/17
-     */
     public int getPriceCode() {
-        return priceCode;
+        return price.getPriceCode();
     }
 
     /**
@@ -54,6 +48,39 @@ public class Movie {
      * @date 2014/11/17
      */
     public void setPriceCode(int priceCode) {
+        switch (priceCode) {
+            case Movie.REGULAR:
+                price = new RegularPrice();
+                break;
+            case Movie.NEW_RELEASE:
+                price = new NewReleasePrice();
+                break;
+            case Movie.CHILDRENS:
+                price = new ChildrensPrice();
+                break;
+        }
         this.priceCode = priceCode;
+    }
+
+    /**
+     * @param [daysRented]
+     * @return int
+     * @author wrongkey
+     * @description getFrequentRenterPoints
+     * @date 2014/11/24
+     */
+    public int getFrequentRenterPoints(int daysRented) {
+        return price.getFrequentRenterPoints(daysRented);
+    }
+
+    /**
+     * @param [daysRented]
+     * @return double
+     * @author wrongkey
+     * @description
+     * @date 2014/11/24
+     */
+    public double getCharge(int daysRented) {
+        return price.getCharge(daysRented);
     }
 }
